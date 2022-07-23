@@ -4,7 +4,7 @@ import { sha256 as hasher } from 'multiformats/hashes/sha2';
 import * as codec from '@ipld/dag-cbor';
 import varint from 'varint';
 import { concat as uint8ArrayConcat } from 'uint8arrays';
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 
 const STREAMID_CODEC = 206;
 const API_URL = 'https://ceramic-clay.3boxlabs.com/api/v0/multiqueries';
@@ -60,5 +60,38 @@ async function fetchProfile(address) {
   return profile
 }
 
-fetchProfile('0x00826dcb58b67901a881786efd6fc668346518f7').then(console.log);
+// fetchProfile('0x00826dcb58b67901a881786efd6fc668346518f7').then(console.log);
 
+
+const profileForm = document.getElementById('profileForm')
+const profileName = document.getElementById('profileName')
+const profileGender = document.getElementById('profileGender')
+const profileCountry = document.getElementById('profileCountry')
+const submitBtn = document.getElementById('submitBtn')
+
+async function renderProfileData(data) {
+  if (!data) return
+  data.name ? profileName.innerHTML = "Name:     " + data.name : profileName.innerHTML = "Name:     "
+  data.gender ? profileGender.innerHTML = "Gender:     " + data.gender : profileGender.innerHTML = "Gender:     "
+  data.country ? profileCountry.innerHTML = "Country:     " + data.country : profileCountry.innerHTML = "Country:     "
+}
+
+async function fetchAndRenderProfile() {
+  try {
+      submitBtn.value = "Fetching..."
+
+      const address = document.getElementById('address').value
+      const profile = await fetchProfile(address)
+
+      renderProfileData(profile)
+  } catch (error) {
+      console.error(error)
+  } finally {
+      submitBtn.value = "Submit"
+  }
+}
+
+profileForm.addEventListener('submit', async (e) => {
+  e.preventDefault()
+  await fetchAndRenderProfile()
+})
