@@ -53,11 +53,13 @@ async function fetchProfile(address) {
   };
   const data1 = await callApi(body1);
   const definitionId = data1[streamId].content[BASIC_PROFILE_DEFINITION]
+  if (!definitionId) return {};
+
   // second API call
   const body2 = { queries: [{ streamId: definitionId }] };
   const data2 = await callApi(body2);
-  const profile = data2[definitionId.slice(10)].content
-  return profile
+  const profile = data2[definitionId.slice(10)].content;
+  return profile;
 }
 
 // fetchProfile('0x00826dcb58b67901a881786efd6fc668346518f7').then(console.log);
