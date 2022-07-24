@@ -41,12 +41,12 @@ async function getProfile(address) {
     streamId
   }];
   const data1 = await postMultiqueries({ queries });
-  const definitionId = data1[streamId].content[BASIC_PROFILE_DEFINITION]; // formula is irrelevant
+  const definitionId = data1[streamId].next?.content[BASIC_PROFILE_DEFINITION] || data1[streamId].content[BASIC_PROFILE_DEFINITION]; // formula is irrelevant
   if (!definitionId) return {}; // returns {} if no profile found
 
   // second API call on POST /multiqueries
   const data2 = await postMultiqueries({ queries: [{ streamId: definitionId }] });
-  const profile = data2[definitionId.slice(10)].content; // formula is irrelevant
+  const profile = data2[definitionId.slice(10)].next?.content || data2[definitionId.slice(10)].content; // formula is irrelevant
   return profile;
 }
 
